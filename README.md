@@ -29,7 +29,7 @@ Adding Elements:
     addpicture
         filepath           Path to image file
         placement          Coordinates
-        size               Width x Height
+        size               (Width, Height)
 
     addshape -<type>
         Supported types: line, rectangle, square, triangle, circle, arrow
@@ -62,7 +62,7 @@ Adding Elements:
         triangle:
             placement
             angle
-            sides
+            sides (a, b, c)
             color
             filled (true/false)
             borderline width
@@ -82,7 +82,7 @@ Adding Elements:
             length
             width
             color
-            pointing (right, left)
+            pointing <bool> (right, left)
 
 Editing and History:
     undo                   Undo last action
