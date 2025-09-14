@@ -9,7 +9,7 @@ USAGE
 -----
 
 Create and Open Files:
-    new -n filename        Create a new board (presentation)
+    new filename        Create a new board (presentation)
     open filename          Open an existing board
 
 Slide Management:
@@ -82,7 +82,6 @@ Adding Elements:
             length
             width
             color
-            pointing <bool> (right, left)
 
 Editing and History:
     undo                   Undo last action
@@ -93,6 +92,8 @@ Saving:
     save                   Save current board
     save as -n newname -p /path/to/dir
                            Save as a new file (default path is ./)
+Exit:
+    exit/q
 
 NOTES
 -----
