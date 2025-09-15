@@ -19,19 +19,19 @@ Slide Management:
 
 Adding Elements:
 
-    addtext
+    add text
         placement          Coordinates (x,y)
         font size          Numeric value
         font family        Example: Arial, Times New Roman
         color              Hex or named color
         value              Text content
 
-    addpicture
+    add picture
         filepath           Path to image file
         placement          Coordinates
         size               (Width, Height)
 
-    addshape -<type>
+    add shape -<type>
         Supported types: line, rectangle, square, triangle, circle, arrow
 
         line:
@@ -82,6 +82,7 @@ Adding Elements:
             length
             width
             color
+            pointing <bool> (right, left)
 
 Editing and History:
     undo                   Undo last action
@@ -93,7 +94,7 @@ Saving:
     save as -n newname -p /path/to/dir
                            Save as a new file (default path is ./)
 Exit:
-    exit/q
+    exit or q
 
 NOTES
 -----
