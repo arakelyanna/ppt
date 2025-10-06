@@ -6,18 +6,19 @@
 namespace prs {
     enum class TokenType {
 		Command,
-		Option,
 		String,
+		Option,
 		Number,
-		Comma,
 		Boolean,
+		Comma,
 		Eof
 	};
 
 	struct Token {
 		TokenType type;
-		std::string text_value;
+		std::string value;
 
+        bool is_command() const;
         bool is_string() const;
         bool is_option() const;
         bool is_number() const;
@@ -34,6 +35,7 @@ namespace prs {
         const Token& getToken();
 
     private:
+
         std::istream& input;
         size_t position;
     };
