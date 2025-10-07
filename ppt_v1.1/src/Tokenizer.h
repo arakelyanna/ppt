@@ -33,14 +33,13 @@ namespace prs {
     public:
         Tokenizer() : position(0), input(std::cin){}
         Tokenizer(std::istream& input) : position(0), input(input){}
-        bool is_bool();
         const std::string read_word();
         const std::string read_number();
         const std::string read_string();
-        const Token& getToken();
+        Token getToken();
 
     private:
-
+        void check_length() const;
         std::istream& input;
         size_t position;
     };
