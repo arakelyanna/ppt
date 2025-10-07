@@ -19,25 +19,52 @@ bool prs::Token::is_bool() const{
 
 
 
-// std::string prs::Tokenizer::read_command() const{
-    
-// }
+const std::string prs::Tokenizer::read_word() {
+    char c;
+    std::string result;
+    while(input.good() && !iswspace(c)){
+        result.push_back(c);  
+        ++position;      
+    }
+    return result;
+}
 
-// std::string prs::Tokenizer::read_string() const{
-    
-// }
+const std::string prs::Tokenizer::read_string() {
+    char c;
+    std::string result;
+    while(input.good() && c != '"'){
+        result.push_back(c);  
+        ++position;      
+    }
+    return result;
+}
 
-// std::string prs::Tokenizer::read_option() const{
-    
-// }
 
-// double prs::Tokenizer::read_number() const{
-    
-// }
+const std::string prs::Tokenizer::read_number() {
+    char c;
+    std::string result;
+    while(input.good() && !iswspace(c)){
+        c = input.get();
+        ++position;
+        if(c == '.' || c=='e' || c=='E' || isdigit(c)){
+            result.push_back(c);
+        }
+        else{
+            throw std::runtime_error("Invalid number format");
+        }
+        result.push_back(c);
+        
+    }
+    return result;
+}
 
-// bool prs::Tokenizer::read_bool() const{
-    
-// }
+bool prs::Tokenizer::is_bool() {
+    std::string result;
+    input >> result;
+    position+= result.size();
+    return (result == "true" || result == "false");
+
+}
 
 
 const prs::Token& prs::Tokenizer::getToken(){
@@ -45,7 +72,7 @@ const prs::Token& prs::Tokenizer::getToken(){
     if (position > 50) throw "ERROR: Command length should not be greater than 50";
     Token tok;
 
-    if (input.bad()) 
+    if (input.eof()) 
     {
         tok.value = "";
         tok.type = TokenType::Eof;
@@ -59,30 +86,39 @@ const prs::Token& prs::Tokenizer::getToken(){
 
     if (c == '-')
     {
-       c = input.get();
-       position++;
-       if(isdigit(c)){
-        tok.type= TokenType::Number;
-        // tok.value.push_back('-');
-        // read_number();
-       }else tok.type = TokenType::Option;
+        tok.value.push_back(c);
+        c = input.get();
+        position++;
+
+        if(isdigit(c)){
+            tok.type= TokenType::Number;
+            tok.value.push_back(c);
+            tok.value.append(read_number());
+        }
+        else {
+            tok.type = TokenType::Option;
+            tok.value = read_word();
+        }
     }
     else if(c =='"')
     {
         tok.type=TokenType::String;
+        tok.value = read_string();
     }
     else if (c == 't' || c=='f')
     {
-        tok.type = TokenType::Boolean;
+        input.unget();
+        --position;
+        tok.type = is_bool() ? TokenType::Boolean : TokenType::Command;
+        tok.value= read_word();
     }
     else{
+        input.unget();
+        --position;
         tok.type = TokenType::Command;
+        tok.value = read_word();
     }
     
-    
-    
-
-
     return tok;
 }
 // std::istream& input;

@@ -10,11 +10,13 @@ namespace prs {
 		Option,
 		Number,
 		Boolean,
-		Comma,
+		Err,
 		Eof
 	};
 
 	struct Token {
+        Token() : value(""), type(TokenType::Err){}
+
 		TokenType type;
 		std::string value;
 
@@ -31,7 +33,10 @@ namespace prs {
     public:
         Tokenizer() : position(0), input(std::cin){}
         Tokenizer(std::istream& input) : position(0), input(input){}
-
+        bool is_bool();
+        const std::string read_word();
+        const std::string read_number();
+        const std::string read_string();
         const Token& getToken();
 
     private:
