@@ -1,11 +1,11 @@
 #pragma once
 #include <iostream>
-#include <istream>
+#include <sstream>
 #include <string>
 
-namespace prs {
+namespace dec {
     enum class TokenType {
-		Command,
+        Command,
 		String,
 		Option,
 		Number,
@@ -14,33 +14,46 @@ namespace prs {
 		Eof
 	};
 
-	struct Token {
+	class Token {
+    public:
         Token() : value(""), type(TokenType::Err){}
 
 		TokenType type;
 		std::string value;
-
+        
         bool is_command() const;
         bool is_string() const;
         bool is_option() const;
         bool is_number() const;
         bool is_bool() const;
+        bool eof() const;
+        bool err() const;
 	};
 
-    
-    class Tokenizer
+    class CLI_Tokenizer
     {
     public:
-        Tokenizer() : position(0), input(std::cin){}
-        Tokenizer(std::istream& input) : position(0), input(input){}
+        CLI_Tokenizer() : position(0) {
+            std::string line;
+            std::getline(std::cin, line);
+            buffer = std::stringstream(line);
+        }
+
+        CLI_Tokenizer(std::istream& input) : position(0) {
+            std::string line;
+            std::getline(input, line);
+            buffer = std::stringstream(line);
+        }
+
+        Token getToken();
+    private:
         const std::string read_word();
         const std::string read_number();
         const std::string read_string();
-        Token getToken();
 
-    private:
         void check_length() const;
-        std::istream& input;
+
+        std::stringstream buffer;
         size_t position;
     };
 

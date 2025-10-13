@@ -1,49 +1,57 @@
 #include "Tokenizer.h"
 
 
-bool prs::Token::is_string() const{
+bool dec::Token::is_string() const{
     return type == TokenType::String;
 }
 
-bool prs::Token::is_option() const{
+bool dec::Token::is_option() const{
     
     return type == TokenType::Option;
 }
 
-bool prs::Token::is_number() const{
+bool dec::Token::is_number() const{
     return type == TokenType::Number;
     
 }
 
-bool prs::Token::is_bool() const{
+bool dec::Token::is_bool() const{
     return type == TokenType::Boolean;
 }
 
+bool dec::Token::eof() const{
+    return type == TokenType::Eof;
+}
 
+bool dec::Token::err() const{
+    return type == TokenType::Err;
+}
 
-const std::string prs::Tokenizer::read_word() {
+const std::string dec::CLI_Tokenizer::read_word() {
     char c;
     std::string result ="";
-    while(input.get(c)){
-        if (isspace(c) || c==',') break;
-
+    while(buffer.get(c)){
+        if (isspace(c) || c==',') {
+            // buffer.unget();
+            break;
+        }
         result.push_back(c);  
-        ++position;  
+        ++position;
         check_length();
 
     }
     return result;
 }
 
-const std::string prs::Tokenizer::read_string() {
+const std::string dec::CLI_Tokenizer::read_string() {
     char c;
     std::string result = "";
-    while(input.get(c)){
-        if (c == '"') break;
+    while(buffer.get(c)){
+        if (c == '"'){ break;}
         
         result.push_back(c);  
         ++position;
-        if (input.eof() && c != '"')
+        if (buffer.eof() && c != '"')
         {
             throw std::runtime_error("Unterminated string literal");
         }
@@ -54,11 +62,14 @@ const std::string prs::Tokenizer::read_string() {
 }
 
 
-const std::string prs::Tokenizer::read_number() {
+const std::string dec::CLI_Tokenizer::read_number() {
     char c;
     std::string result = "";
-    while(input.get(c)){
-        if (isspace(c) || c==',') break;
+    while(buffer.get(c)){
+        if (isspace(c) || c==',') {
+            // buffer.unget();
+            break;
+        }
 
         if(c == '.' || c=='e' || c=='E' || isdigit(c)){
             result.push_back(c);
@@ -73,64 +84,65 @@ const std::string prs::Tokenizer::read_number() {
 }
 
 
-prs::Token prs::Tokenizer::getToken(){    
-    std::string word;
+dec::Token dec::CLI_Tokenizer::getToken(){    
     Token tok;
-
-    if (input.fail()) {
-        throw std::runtime_error("Input stream error");
+    char c;
+    while(buffer.get(c) && isspace(c)) {
+        position++;
     }
-    else if (input.eof())
-    {
+    if (buffer.eof()) {
         tok.value = "";
         tok.type = TokenType::Eof;
+        std::cout << c << '\n';
         return tok;
     }
+    if (buffer.fail()) {
+        throw std::runtime_error("Input stream error");
+    }
     
-    char c;
-    
-    c = input.get();
-    position++;
+
 
     if (c == '-')
     {
-        tok.value.push_back(c);
-        c = input.peek();
-
-        if(isdigit(c)){
+        
+        if(isdigit(buffer.peek())){
+            tok.value.push_back(c);
             tok.type= TokenType::Number;
-            tok.value = read_number();
+            tok.value.append(read_number());
         }
         else {
             tok.type = TokenType::Option;
-            tok.value = read_word();
+            tok.value.append(read_word());
         }
     }
     else if(c =='"')
     {
         tok.type=TokenType::String;
         tok.value = read_string();
+        buffer.get(c); 
+        position++;
     }
     else if (c == 't' || c=='f')
     {
-        input.unget();
+        buffer.unget();
         --position;
 
         std::string word;
-        input >> word;
+        buffer >> word;
+        position += word.length();
 
         tok.type = (word == "true" || word == "false") ? TokenType::Boolean : TokenType::Command;
         tok.value= word;
     }
     else if(isdigit(c)){
-        input.unget();
+        buffer.unget();
         --position;
 
         tok.type = TokenType::Number;
         tok.value = read_number();
     }
     else{
-        input.unget();
+        buffer.unget();
         --position;
         tok.type = TokenType::Command;
         tok.value = read_word();
@@ -139,7 +151,8 @@ prs::Token prs::Tokenizer::getToken(){
     return tok;
 }
 
-void prs::Tokenizer::check_length() const {
+
+void dec::CLI_Tokenizer::check_length() const {
     if (position > 50)
         throw std::runtime_error("ERROR: Command length should not be greater than 50!");
 }

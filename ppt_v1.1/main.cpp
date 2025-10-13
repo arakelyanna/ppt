@@ -3,12 +3,18 @@
 int main(int argc, char* argv[]){
     try
     {
-        prs::Tokenizer tok(std::cin);
+        dec::CLI_Tokenizer tok(std::cin);
 
-        prs::Token token;
-        while(token.type != prs::TokenType::Eof){
+        dec::Token token;
+        while(true){
             token = tok.getToken();
-            std::cout << token.value << '\n';
+            if (token.type == dec::TokenType::Eof)
+            {
+                break;
+            }
+            
+            std::cout << "val = " << token.value << ' ';
+            std::cout << (int)token.type << '\n';
         }
     }
     catch(const std::exception& e)
