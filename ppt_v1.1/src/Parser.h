@@ -21,7 +21,7 @@ namespace dec{
             init_transition();
         }
         
-        std::unique_ptr<ICommand> parse();
+        std::unique_ptr<cmd::ICommand> parse();
 
     private:
     
@@ -50,6 +50,10 @@ namespace dec{
             transition[(int)State::Number][(int)TokenType::Eof] = State::Eof;
             transition[(int)State::String][(int)TokenType::Eof] = State::Eof;
             transition[(int)State::Boolean][(int)TokenType::Eof] = State::Eof;
+            
+            transition[(int)State::Number][(int)TokenType::Option] = State::Option;
+            transition[(int)State::String][(int)TokenType::Option] = State::Option;
+            transition[(int)State::Boolean][(int)TokenType::Option] = State::Option;
         }
 
         CLI_Tokenizer tokenizer;

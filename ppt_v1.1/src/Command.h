@@ -7,14 +7,16 @@
 #include "Shape.h"
 #include "Slide.h"
 #include "Text.h"
+#include "Options.h"
 
-namespace dec {
-    using Data = std::variant<std::monostate, std::string, double, std::pair<double, double>, bool>;
+namespace cmd {
 
     class ICommand {
     public:
         ICommand() = default;
         virtual void execute() = 0;
+    public:
+        Options opt;
     };
 
 
@@ -24,6 +26,7 @@ namespace dec {
         void execute() override{
             std::cout << "shape added";
         }
+
     private:
         std::shared_ptr<obj::IShape> shape;
 
@@ -53,15 +56,7 @@ namespace dec {
     private:
         std::pair<double, double> posistion;
         std::string path;
-        std::unordered_map<std::string, Data> params = {
-            {"position", std::monostate{}},
-            {"angle", std::monostate{}},
-            {"height", std::monostate{}},
-            {"width", std::monostate{}},
-            {"length", std::monostate{}},
-            {"borderline width", 0.0},
-            {"borderline color", std::monostate{}}
-        };
+        
     };
 
 

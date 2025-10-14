@@ -1,31 +1,6 @@
+#include <vector>
 #include "Tokenizer.h"
 
-
-bool dec::Token::is_string() const{
-    return type == TokenType::String;
-}
-
-bool dec::Token::is_option() const{
-    
-    return type == TokenType::Option;
-}
-
-bool dec::Token::is_number() const{
-    return type == TokenType::Number;
-    
-}
-
-bool dec::Token::is_bool() const{
-    return type == TokenType::Boolean;
-}
-
-bool dec::Token::eof() const{
-    return type == TokenType::Eof;
-}
-
-bool dec::Token::err() const{
-    return type == TokenType::Err;
-}
 
 const std::string dec::CLI_Tokenizer::read_word() {
     char c;
@@ -66,23 +41,20 @@ const std::string dec::CLI_Tokenizer::read_number() {
     char c;
     std::string result = "";
     while(buffer.get(c)){
-        if (isspace(c) || c==',') {
-            // buffer.unget();
-            break;
-        }
+        if (isspace(c) || c==',') break;
 
         if(c == '.' || c=='e' || c=='E' || isdigit(c)){
             result.push_back(c);
             ++position;
         }
         else{
+            std::cout << c << '\n';
             throw std::runtime_error("Invalid number format");
         }
         check_length();
     }
     return result;
 }
-
 
 dec::Token dec::CLI_Tokenizer::getToken(){    
     Token tok;
