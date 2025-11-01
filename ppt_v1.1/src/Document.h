@@ -1,7 +1,5 @@
 #pragma once
-#include <iostream>
-#include <optional>
-#include <string>
+#include <fstream>
 #include "Presentation.h"
 #include "Slide.h"
 
@@ -9,11 +7,17 @@ namespace doc{
     class Document{
     public:
         Document() = default;
-        obj::Presentation open() {
-            std::cout << "opened into a ppt\n";
+        Document(const std::string& file_path) : file_path(file_path){
+            file.open(file_path);
+            if (!file)  throw std::runtime_error("ERROR: Ppt file not found\n");
+
+        }
+        Ppt& op() {
+            return parseToPpt();
         }
     private:
-        std::string path;
-        // std::optional<Shape> shape
+        Ppt& parseToPpt();
+        std::string file_path;
+        std::ifstream file;
     };
 }

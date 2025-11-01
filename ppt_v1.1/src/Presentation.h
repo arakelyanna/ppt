@@ -5,14 +5,15 @@
 #include "Document.h"
 #include "Slide.h"
 
-namespace obj{
-    class Presentation{
+namespace doc{
+    class Ppt{
     public:
-        Presentation() = default;
-        doc::Document save(){
-            std::cout << "save into a document"; //actually a  parser
+        Ppt() = default;
+        Document& save(){
+            return parseToDoc(); 
         }
     private:
-        std::vector<Slide> ppt;
+        Document& parseToDoc();
+        std::vector<obj::Slide> ppt;
     };
 }

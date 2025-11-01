@@ -37,6 +37,19 @@ const std::string dec::CLI_Tokenizer::read_string() {
 }
 
 
+const std::string dec::CLI_Tokenizer::read_coord() {
+    char c;
+    std::string result;
+    skip_spaces();
+
+    result = read_number();
+    
+    skip_spaces();
+    if (tok.type == TokenType::Number && c!=')')
+    {
+        throw std::runtime_error("ERROR: missing closing parenthesis");
+    }
+}
 const std::string dec::CLI_Tokenizer::read_number() {
     char c;
     std::string result = "";
@@ -56,12 +69,17 @@ const std::string dec::CLI_Tokenizer::read_number() {
     return result;
 }
 
-dec::Token dec::CLI_Tokenizer::getToken(){    
-    Token tok;
+void dec::CLI_Tokenizer::skip_spaces(){
     char c;
     while(buffer.get(c) && isspace(c)) {
         position++;
     }
+    
+}
+
+dec::Token& dec::CLI_Tokenizer::getToken(){
+    char c;
+    skip_spaces();
     if (buffer.eof()) {
         tok.value = "";
         tok.type = TokenType::Eof;
@@ -94,6 +112,14 @@ dec::Token dec::CLI_Tokenizer::getToken(){
         buffer.get(c); 
         position++;
     }
+    else if (c == '(')
+    {
+
+        
+        tok.type = TokenType::Number;
+        tok.value = read_coord();
+    }
+    
     else if (c == 't' || c=='f')
     {
         buffer.unget();
@@ -113,13 +139,15 @@ dec::Token dec::CLI_Tokenizer::getToken(){
         tok.type = TokenType::Number;
         tok.value = read_number();
     }
-    else{
+    else if(isalpha(c)){
         buffer.unget();
         --position;
         tok.type = TokenType::Command;
         tok.value = read_word();
     }
-    
+    else{
+        throw std::runtime_error("ERROR: unexpected symbol at " + std::to_string(position));
+    }
     return tok;
 }
 
