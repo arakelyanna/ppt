@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <fstream>
 #include "../Object.h"
 #include "../Text/Text.h"
 
@@ -7,16 +8,25 @@ namespace obj{
     class IShape : public Object { 
     public: 
         IShape();
-        virtual void create(const Position&) = 0;
-        virtual void show() const override = 0;
+        virtual void create(const Geometry&) = 0;
+        virtual const Geometry& get_geometry() const;
 
         virtual void set_color(const std::string& color) = 0;
         virtual void set_text(const std::string& value) = 0;
+        virtual void set_text_size(const size_t value) = 0;
+        virtual void set_text_color(const std::string& value) = 0;
+        virtual void set_text_style(const std::string& value) = 0;
+        
+        virtual const std::string& get_type() const = 0;
+
         virtual const std::string& get_text() const = 0;
+        virtual size_t get_text_size() const = 0;
+        virtual const std::string& get_text_color() const = 0;
+        virtual const std::string& get_text_style() const = 0;
         virtual const std::string& get_color() const = 0;
         virtual ~IShape(){}
     protected: 
-        Position pos; 
+        Geometry pos; 
         std::string color;
         double borderline_width;
         Text text;
@@ -25,20 +35,25 @@ namespace obj{
     class FilledShapes: public IShape{
     public: 
         FilledShapes();
-        virtual void create(const Position&) override = 0;
-        virtual void show() const override = 0;
-
-        virtual void set_color(const std::string& color) override;
-        virtual void set_line_color(const std::string& color);
-        virtual void set_line_width(double width);
-        virtual void set_filled(bool fill);
-        virtual void set_text(const std::string& value) override;
-
-        virtual const std::string& get_text() const override;
-        virtual const std::string& get_color() const override;
-        virtual const std::string& get_line_color() const;
-        virtual double get_line_width() const;
-        virtual bool is_filled() const;
+        void create(const Geometry&) override = 0;
+        void set_color(const std::string& color) override;
+        void set_line_color(const std::string& color);
+        void set_line_width(double width);
+        void set_filled(bool fill);
+        void set_text(const std::string& value) override;
+        void set_text_size(const size_t value) override;
+        void set_text_color(const std::string& value) override;
+        void set_text_style(const std::string& value) override;
+    
+        virtual const std::string& get_type() const override = 0;
+        const std::string& get_text() const override;
+        size_t get_text_size() const override;
+        const std::string& get_text_color() const override;
+        const std::string& get_text_style() const override;
+        const std::string& get_color() const override;
+        const std::string& get_line_color() const;
+        double get_line_width() const;
+        bool is_filled() const;
         virtual ~FilledShapes(){}
     protected:
         bool filled;
@@ -49,8 +64,8 @@ namespace obj{
     {
     public:
         Circle();
-        void create(const Position& coords) override;
-        void show() const override;
+        void create(const Geometry& coords) override;
+        const std::string& get_type() const override;
         void set_radius(double);
         double get_radius() const;
     private:
@@ -61,8 +76,8 @@ namespace obj{
     {
     public:
         Rectangle();
-        void create(const Position& coords) override;
-        void show() const override;
+        void create(const Geometry& coords) override;
+        const std::string& get_type() const override;
         double get_height() const;
         double get_width() const;
         void set_height(double value);
@@ -72,11 +87,34 @@ namespace obj{
         double width;
     };
 
+    class Picture : public FilledShapes {
+    public:
+        Picture(const std::string& file = "./image.jpg");
+        
+        void create(const Geometry& coords) override;
+        
+        const std::string& get_type() const override;
+        const std::string& get_path() const;
+        void set_color(const std::string& color) override;
+        double get_height() const;
+        double get_width() const;
+        void set_height(double value);
+        void set_width(double value);
+        
+    private:
+        Geometry pos;
+        std::fstream pic;
+        std::string path;
+        double height;
+        double width;
+    };
+
+
     class Square : public FilledShapes{
     public:
         Square();
-        void create(const Position& coords) override;
-        void show() const override;
+        void create(const Geometry& coords) override;
+        const std::string& get_type() const override;
         double get_side() const;
         void set_side(double value);
     private:
@@ -86,8 +124,8 @@ namespace obj{
     class Triangle : public FilledShapes{
     public:
         Triangle();
-        void create(const Position& coords) override;
-        void show() const override;
+        void create(const Geometry& coords) override;
+        const std::string& get_type() const override;
         const std::array<double, 3>& get_sides() const;
     private:
         std::array<double, 3> sides;
@@ -96,17 +134,24 @@ namespace obj{
     class LinedShapes : public IShape {
     public:
         LinedShapes() : IShape(), length(0), width(0) {}
-        void create(const Position&) override = 0;
-        virtual void show() const override = 0;
-        
-        void set_color(const std::string& color) override;
-        virtual void set_text(const std::string& value) override;
-        virtual void set_width(double);
 
-        virtual const std::string& get_text() const override;
+        void create(const Geometry&) override = 0;
+        
+        virtual void set_width(double) = 0;
+        void set_color(const std::string& color) override;
+        void set_text(const std::string& value) override;
+        void set_text_size(const size_t value) override;
+        void set_text_color(const std::string& value) override;
+        void set_text_style(const std::string& value) override;
+    
+        virtual const std::string& get_type() const override = 0;
+        const std::string& get_text() const override;
+        size_t get_text_size() const override;
+        const std::string& get_text_color() const override;
+        const std::string& get_text_style() const override;
         const std::string& get_color() const override;
-        virtual double get_length() const;
-        virtual double get_width() const;
+        virtual double get_length() const = 0;
+        virtual double get_width() const = 0;
         virtual ~LinedShapes(){}
     protected:
         double length;
@@ -116,9 +161,9 @@ namespace obj{
     class Line : public LinedShapes{
     public:
         Line() : LinedShapes() {}
-        void show() const override;
-        void create(const Position& coords) override;
+        void create(const Geometry& coords) override;
         void set_width(double) override;
+        const std::string& get_type() const override;
         double get_length() const override;
         double get_width() const override;
 
@@ -127,8 +172,8 @@ namespace obj{
     class Arrow : public Line{
     public:
         Arrow();
-        void show() const override;
-        void create(const Position& coords) override;
+        void create(const Geometry& coords) override;
+        const std::string& get_type() const override;
         const std::string& points_to() const;
         void point_other_way();
     private:

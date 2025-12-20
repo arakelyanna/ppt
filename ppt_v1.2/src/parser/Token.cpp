@@ -13,9 +13,17 @@ bool dec::Token::is_option() const{
     return type == TokenType::Option;
 }
 
-bool dec::Token::is_number() const{
-    return type == TokenType::Number;
-    
+
+bool dec::Token::is_int() const {
+    char* end;
+    long val = std::strtol(value.c_str(), &end, 10);
+    return end != value.c_str() && *end == '\0';
+}
+
+bool dec::Token::is_double() const {
+    char* end;
+    std::strtod(value.c_str(), &end);
+    return end != value.c_str() && *end == '\0';
 }
 
 bool dec::Token::is_bool() const{
@@ -28,8 +36,8 @@ bool dec::Token::is_command() const{
     return type == TokenType::Command;
 }
 
-bool dec::Token::eof() const{
-    return type == TokenType::Eof;
+bool dec::Token::end() const{
+    return type == TokenType::End;
 }
 
 bool dec::Token::err() const{

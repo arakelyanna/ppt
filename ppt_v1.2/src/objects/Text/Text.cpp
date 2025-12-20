@@ -6,13 +6,15 @@ namespace obj {
     Text::Text(const std::string& value, size_t size, const std::string& color, const std::string& style) :
         Object(), value(value), size(size), color(color), style(style) {}
 
-    void Text::create(const Position& coords) {
-        assert(coords.size() == 1);
+    void Text::create(const Geometry& coords) {
+        std::cout << coords.size() << '\n';
+        if(coords.size() != 1) throw std::runtime_error("(object) ERROR: The Coordinates for Text should be 1");
         pos = coords;
     }
 
     void Text::set_value(const std::string& val) {
-        assert(val.size() < 100);
+        if(val.size() > 100) throw std::runtime_error("(object) ERROR: The length of the text should not exceed 250");
+
         value = val;
     }
 
@@ -24,13 +26,13 @@ namespace obj {
 
     void Text::set_style(const std::string& value) {
         auto lookUp = std::find(styles.begin(), styles.end(), value);
-        if (lookUp == styles.end()) throw std::runtime_error("ERROR: Color not supported\n");
+        if (lookUp == styles.end()) std::cerr << ("ERROR: Color not supported\n");
         this->style = value;
     }
 
     void Text::set_color(const std::string& value) {
         auto lookUp = std::find(colors.begin(), colors.end(), value);
-        if (lookUp == colors.end()) throw std::runtime_error("ERROR: Color not supported\n");
+        if (lookUp == colors.end()) std::cerr << ("ERROR: Color not supported\n");
         this->color = value;
     }
 
@@ -50,18 +52,10 @@ namespace obj {
         return size;
     }
 
-    const Position& Text::get_position() const {
+    const Geometry& Text::get_geometry() const {
         return pos;
     }
 
-    void Text::show() const {
-        std::cout<< "Text at (" << pos[0].first << ", " << pos[0].second << ") with\n" <<
-            "\ntext: " << value <<
-            "\nstyle: " << size<<
-            "\ncolor: " << color<<
-            "\nstyle: " << style<<
-            "\n---------------------\n";
-    }
 
 
 }

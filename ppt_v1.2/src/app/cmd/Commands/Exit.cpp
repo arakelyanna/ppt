@@ -1,14 +1,8 @@
-#include "../Command.h"
+#include "Command.h"
 
 namespace cmd {
-    void Exit::set(const std::string& key, const Value& val) {
-        builder.set(key, val);
-    }
-
-    bool Exit::execute() {
+    bool Exit::execute(std::ostream& output) {
         std::cout << "Exitting...\n";
-        return true;
+        return false;
     }
-    
-    void Exit::build() {}
 }

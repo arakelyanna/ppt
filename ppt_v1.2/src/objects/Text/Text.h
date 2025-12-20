@@ -10,16 +10,15 @@ namespace obj {
     class Text : public Object {
     public:
         Text();
+        Text(const Text&) = default;
         Text(Text&&) = default;
-        Text& operator=(Text&&) = default; 
-        Text(const Text&) = delete;
+
         Text& operator=(const Text&) = delete;
+        Text& operator=(Text&&) = default; 
 
         Text(const std::string& value, size_t size = 11, const std::string& color = "black", const std::string& style = "arial");
-        
-        void show() const override;
 
-        void create(const Position& coords);
+        void create(const Geometry& coords);
         void set_value(const std::string& val);
         void set_size(size_t size);
         void set_style(const std::string& value);
@@ -29,12 +28,12 @@ namespace obj {
         const std::string& get_text() const;
         const std::string& get_style() const;
         size_t get_size() const;
-        const Position& get_position() const;
+        const Geometry& get_geometry() const;
 
     private:
         const std::array<std::string, 4> styles = {"arial", "roberto", "sylfaen", "temes new roman"};
         
-        Position pos;
+        Geometry pos;
         std::string value;
         size_t size;
         std::string style;

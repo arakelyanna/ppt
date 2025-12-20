@@ -1,21 +1,11 @@
 #include <stdexcept>
-#include "../Command.h"
+#include "Command.h"
 
 namespace cmd {
-
-    void AddSlide::set(const std::string& key, const Value& val) {
-        builder.set(key, val);
-    }
-
-    bool AddSlide::execute() {
-        if (pos > ppt.size()) 
-            throw std::runtime_error("ERROR: Invalid position " + std::to_string(pos));
-        ppt.add_slide(slide, pos);
+    bool AddSlide::execute(std::ostream& output) {
+        std::shared_ptr<doc::IAction> pAct = std::make_shared<doc::AddSlideAction>(slide, pos);
+        editor->carry_out(pAct);
+        output << "Slide successfully added at " << pos << '\n';
         return true;
-
-    }
-
-    void AddSlide::build() {
-        pos = builder.build_slide_command();
     }
 }

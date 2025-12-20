@@ -1,17 +1,11 @@
-#include "../Command.h"
+#include "Command.h"
 
 namespace cmd {
-    void AddShape::set(const std::string& key, const Value& val) {
-        builder.set(key, val);
-    }
-    
-    bool AddShape::execute() {
-        ppt.add_object(std::move(shape));
+    bool AddShape::execute(std::ostream& output) {
+        std::shared_ptr<doc::IAction> pAct = std::make_shared<doc::AddObjectAction>(shape);
+        editor->carry_out(pAct);
+        output << "Shape " /*<< shape->get_type()*/ << " successfully added!";
         return true;
 
-    }
-
-    void AddShape::build() {
-        shape = builder.build_shape();
     }
 }

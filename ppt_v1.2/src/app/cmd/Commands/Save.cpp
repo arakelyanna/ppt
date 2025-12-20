@@ -1,21 +1,24 @@
-#include "../Command.h"
+#include "Command.h"
+#include "../../files/factory/serializerFactory.h"
 
 namespace cmd {
-    void Save::set(const std::string& key, const Value& val) {
-        builder.set(key, val);
-    }
-
-    bool Save::execute() {
-        std::fstream file(file_path);
-        if (!file) {
-            throw std::runtime_error("ERROR: Invalid file path!");
+    bool Save::execute(std::ostream& output) {
+        // Get the CURRENT ppt from editor, not the stored one
+        auto currentPpt = editor->get_doc();
+        
+        if (!currentPpt) {
+            output << "Error: No presentation to save!\n";
+            return false;
         }
-        else 
-            ppt.save(file_path);
+        
+        auto& factory = file::SerializationFactory::createDefaultFactory();
+        
+        if (factory.saveToFile(currentPpt, file_path)) {
+            output << "File successfully saved in " << file_path << "!\n";
+        } else {
+            output << "Failed to save file!\n";
+        }
+        
         return true;
-    }
-
-    void Save::build() {
-        file_path = builder.build_file();
     }
 }

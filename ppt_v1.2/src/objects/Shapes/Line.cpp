@@ -4,10 +4,16 @@
 
 namespace obj{
 
-    void Line::create(const Position& coords){
+    void Line::create(const Geometry& coords){
+        if(coords.size() != 2) throw std::runtime_error("(object) ERROR: The Coordinates for Line should be 3");
         assert(coords.size() == 2);
         pos = coords;
         length =  std::sqrt(std::pow(pos[0].first-pos[1].first, 2)+std::pow(pos[0].second-pos[1].second, 2));
+    }
+
+    const std::string& Line::get_type() const {
+        static const std::string type = "Line";
+        return type;    
     }
 
     double Line::get_length() const {
@@ -17,13 +23,7 @@ namespace obj{
     double Line::get_width() const {
         return width;
     }
-    void Line::show() const {
-        std::cout<< "Line at (" << pos[0].first << ", " << pos[0].second << ")\n" <<
-            "color: " << color<<
-            "\nwidth: " << width <<
-            "\nlength: " << length <<
-            "\n---------------------\n";
-    }
+    
 
     void Line::set_width(double) {
 

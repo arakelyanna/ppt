@@ -1,16 +1,11 @@
-#include "../Command.h"
+#include "Command.h"
 
 namespace cmd {
-    void AddPicture::set(const std::string& key, const Value& val) {
-        builder.set(key, val);
-    }
-    
-    bool AddPicture::execute() {
-        ppt.add_object(std::make_unique<obj::Picture>(std::move(pic)));
+    bool AddPicture::execute(std::ostream& output) {
+        std::shared_ptr<doc::IAction> pAct = std::make_shared<doc::AddObjectAction>(pic);
+        editor->carry_out(pAct);
+        output << "Picture successfully added!\n";
         return true;
     }
 
-    void AddPicture::build() {
-        pic = builder.build_picture();
-    }
 }
