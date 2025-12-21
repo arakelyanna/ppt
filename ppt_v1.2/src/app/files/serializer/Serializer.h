@@ -118,33 +118,27 @@ namespace file {
             : slide_(slide), objectSerializers_(objectSerializers) {}
         
         json serialize() const override {
-            std::cout << "DEBUG: SlideSerializer::serialize() START" << std::endl;
             
             json j;
             j["id"] = slide_.get_id();
             j["objects"] = json::array();
             
-            std::cout << "DEBUG: Serializing " << objectSerializers_.size() << " objects" << std::endl;
             
             for (size_t i = 0; i < objectSerializers_.size(); ++i) {
-                std::cout << "DEBUG: Serializing object " << i << std::endl;
                 
                 if (!objectSerializers_[i]) {
-                    std::cerr << "ERROR: Object serializer " << i << " is null!" << std::endl;
                     continue;
                 }
                 
                 try {
                     json objJson = objectSerializers_[i]->serialize();
                     j["objects"].push_back(objJson);
-                    std::cout << "DEBUG: Object " << i << " serialized successfully" << std::endl;
                 } catch (const std::exception& e) {
                     std::cerr << "ERROR serializing object " << i << ": " << e.what() << std::endl;
-                    throw;
+                    throw std::runtime_error("(files) ERROR: Could not serialize object " + std::to_string(i) + ": " + std::string(e.what()));
                 }
             }
             
-            std::cout << "DEBUG: SlideSerializer::serialize() DONE" << std::endl;
             return j;
         }
         

@@ -82,6 +82,19 @@ namespace cmd {
         std::unique_ptr<I_Command> create() override;
     };
 
+    class DrawSlideCreator : public I_CmdCreator {
+    public:
+        DrawSlideCreator(std::shared_ptr<doc::Ppt> ppt);
+        std::unique_ptr<I_Command> create() override;
+    };
+
+    class DrawCreator : public I_CmdCreator {
+    public:
+        DrawCreator(std::shared_ptr<doc::Ppt> ppt);
+        std::unique_ptr<I_Command> create() override;
+    };
+
+
     class OpenCreator : public I_CmdCreator {
     public:
         OpenCreator(std::shared_ptr<doc::Ppt> ppt);

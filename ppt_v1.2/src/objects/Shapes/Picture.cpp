@@ -9,6 +9,10 @@ namespace obj {
         pic.open(path);
     }
     
+    void Picture::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
+
     void Picture::create(const Geometry& coords) {
         if (!pic) throw std::runtime_error("(object) ERROR: Picture file not found");
         if(coords.size() != 2) throw std::runtime_error("(object) ERROR: The Coordinates for Picture should be 2");

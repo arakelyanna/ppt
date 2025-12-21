@@ -13,26 +13,15 @@ namespace file {
     }
 
     std::unique_ptr<ISerializer> SerializationFactory::createSerializer(const obj::Object& obj) const {
-        std::cout << "DEBUG: createSerializer - typeid = " << typeid(obj).name() << std::endl;
-        
-        // Debug: print all registered types
-        std::cout << "DEBUG: Number of registered types: " << serializerCreators_.size() << std::endl;
-        std::cout << "DEBUG: Registered types:" << std::endl;
-        for (const auto& pair : serializerCreators_) {
-            std::cout << "  - " << pair.first.name() << std::endl;
-        }
-        
+
         auto typeIdx = std::type_index(typeid(obj));
         auto it = serializerCreators_.find(typeIdx);
         
         if (it == serializerCreators_.end()) {
-            std::cerr << "ERROR: No serializer for type: " << typeid(obj).name() << std::endl;
-            throw std::runtime_error("No serializer registered for object type");
+            throw std::runtime_error("(files) WARNING: No serializer registered for object type " + std::string(typeid(obj).name()));
         }
         
-        std::cout << "DEBUG: Found serializer, calling creator..." << std::endl;
         auto result = it->second(obj);
-        std::cout << "DEBUG: Serializer created successfully" << std::endl;
         
         return result;
     }
@@ -53,7 +42,6 @@ namespace file {
     json SerializationFactory::serializeSlide(const doc::Slide& slide) const {
         std::vector<std::unique_ptr<ISerializer>> objectSerializers;
         
-        std::cout << "DEBUG: serializeSlide - counting objects..." << std::endl;
         int count = 0;
         
         json j;
@@ -62,15 +50,11 @@ namespace file {
         for (auto it = slide.begin(); it != slide.end(); ++it) {
             count++;
         }
-        std::cout << "DEBUG: Slide has " << count << " objects" << std::endl;
         
         for (auto it = slide.begin(); it != slide.end(); ++it) {
             const auto& obj = *it;
             if (obj) {
-                std::cout << "DEBUG: Serializing object type: " << typeid(*obj).name() << std::endl;
                 objectSerializers.push_back(createSerializer(*obj));
-            } else {
-                std::cout << "DEBUG: Skipping null object" << std::endl;
             }
         }
         j["objects"] = json::array();
@@ -85,27 +69,20 @@ namespace file {
     std::shared_ptr<doc::Slide> SerializationFactory::deserializeSlide(const json& j) const {
         std::vector<std::shared_ptr<obj::Object>> objects;
         
-        std::cout << "DEBUG: deserializeSlide - checking for objects..." << std::endl;
         
         if (j.contains("objects")) {
-            std::cout << "DEBUG: Found objects array, size = " << j["objects"].size() << std::endl;
             
             for (const auto& objJson : j["objects"]) {
                 try {
-                    std::cout << "DEBUG: Deserializing object type: " << objJson["type"] << std::endl;
                     auto obj = createObject(objJson);
                     objects.push_back(obj);
-                    std::cout << "DEBUG: Object deserialized successfully" << std::endl;
                 } catch (const std::exception& e) {
-                    std::cerr << "Warning: Failed to deserialize object: " 
-                            << e.what() << std::endl;
+                    throw std::runtime_error("(files) WARNING: Failed to deserialize slide: " + std::string(e.what()));
+
                 }
             }
-        } else {
-            std::cout << "DEBUG: No objects array found in JSON!" << std::endl;
         }
         
-        std::cout << "DEBUG: Total objects deserialized: " << objects.size() << std::endl;
         
         return SlideDeserializer::deserialize(j, objects);
     }
@@ -135,8 +112,8 @@ namespace file {
                 try {
                     slides.push_back(deserializeSlide(slideJson));
                 } catch (const std::exception& e) {
-                    std::cerr << "Warning: Failed to deserialize slide: " 
-                              << e.what() << std::endl;
+                    throw std::runtime_error("(files) WARNING: Failed to deserialize slide: " + std::string(e.what()));
+
                 }
             }
         }
@@ -146,33 +123,25 @@ namespace file {
 
     bool SerializationFactory::saveToFile(std::shared_ptr<doc::Ppt> ppt, const std::string& filename = "./ppt_test") const {
         try {
-            std::cout << "DEBUG: saveToFile - starting serialization..." << std::endl;
             
             if (!ppt) {
-                std::cerr << "ERROR: ppt is null in saveToFile!" << std::endl;
                 return false;
             }
             
-            std::cout << "DEBUG: Calling serializePresentation..." << std::endl;
             json j = serializePresentation(ppt);
             
-            std::cout << "DEBUG: Serialization complete, opening file..." << std::endl;
             
             std::ofstream file(filename);
             if (!file.is_open()) {
-                std::cerr << "Error: Could not open file for writing: " << filename << std::endl;
                 return false;
             }
             
-            std::cout << "DEBUG: Writing JSON to file..." << std::endl;
             file << j.dump(4);
             file.close();
             
-            std::cout << "DEBUG: File saved successfully!" << std::endl;
             return true;
         } catch (const std::exception& e) {
-            std::cerr << "Error saving presentation: " << e.what() << std::endl;
-            return false;
+            throw std::runtime_error("(files) ERROR: Could not save presentation: " + std::string(e.what()));
         }
     }
 
@@ -180,8 +149,7 @@ namespace file {
         try {
             std::ifstream file(filename);
             if (!file.is_open()) {
-                std::cerr << "Error: Could not open file for reading: " << filename << std::endl;
-                return nullptr;
+                throw std::runtime_error("(files) ERROR: Could not open file " + filename);
             }
             
             json j;
@@ -190,8 +158,7 @@ namespace file {
             
             return deserializePresentation(j);
         } catch (const std::exception& e) {
-            std::cerr << "Error loading presentation: " << e.what() << std::endl;
-            return nullptr;
+            throw std::runtime_error("(files) ERROR: Could not load presentation " + std::string(e.what()));
         }
     }
 

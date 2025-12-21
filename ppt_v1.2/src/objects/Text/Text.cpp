@@ -1,4 +1,5 @@
 #include "Text.h"
+#include "../../app/printer/Visitor/Visitor.h"
 
 namespace obj {
     Text::Text() : Object(), value("text"), size(11), color("black"), style("arial") {}
@@ -10,6 +11,10 @@ namespace obj {
         std::cout << coords.size() << '\n';
         if(coords.size() != 1) throw std::runtime_error("(object) ERROR: The Coordinates for Text should be 1");
         pos = coords;
+    }
+
+    void Text::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
     }
 
     void Text::set_value(const std::string& val) {

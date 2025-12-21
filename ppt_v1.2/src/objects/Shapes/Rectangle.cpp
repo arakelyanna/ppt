@@ -9,13 +9,16 @@ namespace obj{
         pos={{0, 0}, {1, 1}};
     }
 
+    void Rectangle::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
+
     void Rectangle::create(const Geometry& coords) {
         assert(coords.size() == 2);
         if(coords.size() != 2) throw std::runtime_error("(object) ERROR: The Coordinates for Rectangle should be 2");
         pos = coords;
         width= std::abs(pos[0].first-pos[1].first);
         height= std::abs(pos[0].second-pos[1].second);
-        std::cout << "shape created\n";
     }
 
     const std::string& Rectangle::get_type() const {

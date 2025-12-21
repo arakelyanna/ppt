@@ -15,13 +15,14 @@ namespace cmd {
             commands.emplace("add text", [ppt](){ return std::make_unique<AddTextCreator>(ppt); });
             commands.emplace("add picture", [ppt](){ return std::make_unique<AddPictureCreator>(ppt); });
             commands.emplace("remove object", [ppt](){ return std::make_unique<RemoveObjectCreator>(ppt); });
-            commands.emplace("show", [ppt](){ return std::make_unique<ShowFileCreator>(ppt); });
             commands.emplace("show slide", [ppt](){ return std::make_unique<ShowSlideCreator>(ppt); });
-            commands.emplace("show file", [ppt](){ return std::make_unique<ShowFileCreator>(ppt); });
+            commands.emplace("draw slide", [ppt](){ return std::make_unique<DrawSlideCreator>(ppt); });
+            commands.emplace("draw", [ppt](){ return std::make_unique<DrawCreator>(ppt); });
             commands.emplace("open", [ppt](){ return std::make_unique<OpenCreator>(ppt); });
             commands.emplace("save", [ppt](){ return std::make_unique<SaveCreator>(ppt); });
             commands.emplace("undo", [ppt](){ return std::make_unique<UndoCreator>(ppt); });
             commands.emplace("redo", [ppt](){ return std::make_unique<RedoCreator>(ppt); });
+            commands.emplace("print", [ppt](){ return std::make_unique<ExitCreator>(ppt); });
             commands.emplace("exit", [ppt](){ return std::make_unique<ExitCreator>(ppt); });
             commands.emplace("q", [ppt](){ return std::make_unique<ExitCreator>(ppt); });
         }

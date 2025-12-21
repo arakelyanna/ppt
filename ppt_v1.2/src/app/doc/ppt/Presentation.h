@@ -18,6 +18,11 @@ namespace doc {
         std::shared_ptr<Slide> operator[](size_t i);
         std::shared_ptr<Slide> const operator[](size_t i) const;
 
+        using const_iterator = std::vector<std::shared_ptr<Slide>>::const_iterator;
+        
+        const_iterator begin() const { return ppt.begin(); }
+        const_iterator end() const { return ppt.end(); }
+
     private:
         std::vector<std::shared_ptr<Slide>> ppt;
         size_t current;

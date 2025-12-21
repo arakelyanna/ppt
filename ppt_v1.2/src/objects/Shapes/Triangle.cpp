@@ -7,7 +7,9 @@ namespace obj{
     Triangle::Triangle() : FilledShapes() {
         pos={{0, 0}, {1, 1}, {0, 1}};
     }
-
+    void Triangle::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
     void Triangle::create(const Geometry& coords) {
         if(coords.size() != 3) throw std::runtime_error("(object) ERROR: The Coordinates for Triangle should be 3");
         pos = coords;

@@ -6,6 +6,11 @@ namespace obj{
     Arrow::Arrow() : Line() {
         pointing = "clockwise";
     }
+
+    void Arrow::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
+
     void Arrow::create(const Geometry& coords){
         if(coords.size() != 2) throw std::runtime_error("(object) ERROR: The Coordinates for Line should be 2");
 

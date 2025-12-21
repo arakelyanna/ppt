@@ -174,13 +174,10 @@ namespace file {
             }
             
             for (size_t i = 0; i < slides.size(); ++i) {
-                std::cout << "DEBUG: Adding slide " << i << std::endl;
-                // Count objects by iterating
                 int objCount = 0;
                 for (auto it = slides[i]->begin(); it != slides[i]->end(); ++it) {
                     objCount++;
                 }
-                std::cout << "DEBUG: Slide has " << objCount << " objects before add_slide" << std::endl;
                 
                 ppt->add_slide(slides[i], ppt->size());  // Add at END
             }

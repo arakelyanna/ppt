@@ -14,11 +14,7 @@
 namespace cmd {
     class I_Command {
     public:
-        I_Command(std::shared_ptr<doc::Ppt> ppt) {
-            if(!editor) {
-                editor = std::make_shared<doc::Editor>(ppt);
-            }
-        }
+        I_Command(std::shared_ptr<doc::Ppt> ppt);
 
         virtual bool execute(std::ostream& output) = 0;
         virtual ~I_Command() = default;
@@ -27,7 +23,6 @@ namespace cmd {
         static std::shared_ptr<doc::Editor> editor;
         
     };
-    std::shared_ptr<doc::Editor> I_Command::editor=nullptr;
 
     class AddSlide : public I_Command {
     public:
@@ -105,6 +100,22 @@ namespace cmd {
         std::ostream& output;
     };
 
+    class DrawSlide : public I_Command {
+    public:
+        DrawSlide(std::shared_ptr<doc::Ppt> ppt, size_t pos)
+            : I_Command(ppt), pos(pos) {}
+        bool execute(std::ostream& output) override;
+    private:
+        size_t pos;
+    };
+
+    class Draw : public I_Command {
+    public:
+        Draw(std::shared_ptr<doc::Ppt> ppt)
+            : I_Command(ppt) {}
+        bool execute(std::ostream& output) override;
+    };
+    
     class Open : public I_Command {
     public:
         Open(std::shared_ptr<doc::Ppt> ppt, const std::string& path = "./ppt_test")

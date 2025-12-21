@@ -3,12 +3,15 @@
 #include <fstream>
 #include "../Object.h"
 #include "../Text/Text.h"
+#include "../../app/printer/Visitor/Visitor.h"
 
 namespace obj{
+
     class IShape : public Object { 
     public: 
         IShape();
         virtual void create(const Geometry&) = 0;
+        virtual void accept(const out::IVisitor& visitor) override = 0;
         virtual const Geometry& get_geometry() const;
 
         virtual void set_color(const std::string& color) = 0;
@@ -36,6 +39,7 @@ namespace obj{
     public: 
         FilledShapes();
         void create(const Geometry&) override = 0;
+        void accept(const out::IVisitor& visitor) override = 0;
         void set_color(const std::string& color) override;
         void set_line_color(const std::string& color);
         void set_line_width(double width);
@@ -65,6 +69,7 @@ namespace obj{
     public:
         Circle();
         void create(const Geometry& coords) override;
+        void accept(const out::IVisitor& visitor) override;
         const std::string& get_type() const override;
         void set_radius(double);
         double get_radius() const;
@@ -77,6 +82,7 @@ namespace obj{
     public:
         Rectangle();
         void create(const Geometry& coords) override;
+        void accept(const out::IVisitor& visitor) override;
         const std::string& get_type() const override;
         double get_height() const;
         double get_width() const;
@@ -89,10 +95,11 @@ namespace obj{
 
     class Picture : public FilledShapes {
     public:
-        Picture(const std::string& file = "./image.jpg");
+        Picture(const std::string& file = "./pic.png");
         
         void create(const Geometry& coords) override;
         
+        void accept(const out::IVisitor& visitor) override;
         const std::string& get_type() const override;
         const std::string& get_path() const;
         void set_color(const std::string& color) override;
@@ -114,6 +121,7 @@ namespace obj{
     public:
         Square();
         void create(const Geometry& coords) override;
+        void accept(const out::IVisitor& visitor) override;
         const std::string& get_type() const override;
         double get_side() const;
         void set_side(double value);
@@ -125,6 +133,7 @@ namespace obj{
     public:
         Triangle();
         void create(const Geometry& coords) override;
+        void accept(const out::IVisitor& visitor) override;
         const std::string& get_type() const override;
         const std::array<double, 3>& get_sides() const;
     private:
@@ -136,6 +145,7 @@ namespace obj{
         LinedShapes() : IShape(), length(0), width(0) {}
 
         void create(const Geometry&) override = 0;
+        void accept(const out::IVisitor& visitor) override = 0;
         
         virtual void set_width(double) = 0;
         void set_color(const std::string& color) override;
@@ -162,6 +172,7 @@ namespace obj{
     public:
         Line() : LinedShapes() {}
         void create(const Geometry& coords) override;
+        void accept(const out::IVisitor& visitor) override;
         void set_width(double) override;
         const std::string& get_type() const override;
         double get_length() const override;
@@ -173,6 +184,7 @@ namespace obj{
     public:
         Arrow();
         void create(const Geometry& coords) override;
+        void accept(const out::IVisitor& visitor) override;
         const std::string& get_type() const override;
         const std::string& points_to() const;
         void point_other_way();

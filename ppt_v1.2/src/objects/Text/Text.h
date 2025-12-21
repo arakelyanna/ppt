@@ -15,6 +15,8 @@ namespace obj {
 
         Text& operator=(const Text&) = delete;
         Text& operator=(Text&&) = default; 
+        
+        void accept(const out::IVisitor& visitor) override;
 
         Text(const std::string& value, size_t size = 11, const std::string& color = "black", const std::string& style = "arial");
 

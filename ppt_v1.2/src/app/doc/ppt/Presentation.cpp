@@ -1,13 +1,28 @@
 #include "Presentation.h"
+#include "../../files/factory/serializerFactory.h"
 
 namespace doc {
+
     Ppt::Ppt(const std::string& path="") : current(0) {
         if (path != "") {
-
+            auto& deserializer = file::SerializationFactory::createDefaultFactory();
+            std::shared_ptr<doc::Ppt> loadedPpt = deserializer.loadFromFile(path);
+            
+            if (!loadedPpt) { 
+                throw std::runtime_error("(files) ERROR: Could not open file " + path);
+            }
+            
+            this->ppt = loadedPpt->ppt;
+            this->current = loadedPpt->current;
+            this->filePath = loadedPpt->filePath;
         }
-        ppt.push_back(std::make_shared<Slide>());
+        else {
+            ppt.push_back(std::make_shared<Slide>());
+        }
     }
-    void Ppt::setFilePath(const std::string& file = "./ppt_test") {
+
+
+    void Ppt::setFilePath(const std::string& file = "./ztest/ppt_test") {
         filePath = file;
     }
 

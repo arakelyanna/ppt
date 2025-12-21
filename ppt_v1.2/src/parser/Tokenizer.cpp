@@ -51,7 +51,7 @@ const std::string dec::CLI_Tokenizer::read_string() {
         result.push_back(c);
     }
 
-    throw std::runtime_error("Unterminated string literal");
+    throw std::runtime_error("(tokenizer) ERROR: Unterminated string literal");
 }
 
 

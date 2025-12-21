@@ -3,8 +3,8 @@
 #include "../../printer/Visitor/Visitor.h"
 
 namespace cmd {
-    bool ShowFile::execute(std::ostream& output) {
-        out::CLIPrinterVisitor printer(editor->get_doc(), output);
+    bool Draw::execute(std::ostream& output) {
+        out::SVGPrinterVisitor printer(editor->get_doc());
         printer.print();
         return true;
     }

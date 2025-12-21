@@ -5,6 +5,10 @@ namespace obj{
 
     Square::Square() : FilledShapes(){ }
 
+    void Square::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
+
     void Square::create(const Geometry& coords) {
         if(coords.size() != 2) throw std::runtime_error("(object) ERROR: The Coordinates for Square should be 2");
         

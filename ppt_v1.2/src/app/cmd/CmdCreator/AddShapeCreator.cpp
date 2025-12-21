@@ -17,20 +17,17 @@ namespace cmd{
 
     std::unique_ptr<I_Command> AddShapeCreator::create() {
         std::shared_ptr<obj::IShape> shape;
-        std::cout << "here to create your shape\n";
         
         // Check if "shape" key exists
         if (options.find("shape") == options.end()) {
-            std::cerr << "ERROR: 'shape' not found in options!" << std::endl;
-            throw std::runtime_error("shape option missing");
+            throw std::runtime_error("(command) ERROR: 'shape' option missing");
         }
         
         auto arg = std::get_if<std::string>(&options.at("shape").val);
         
         // Check if it's actually a string
         if (!arg) {
-            std::cerr << "ERROR: 'shape' value is not a string!" << std::endl;
-            throw std::runtime_error("shape value is not a string");
+            throw std::runtime_error("(command) ERROR: 'shape' value is not a string");
         }
         
         std::cout << "Shape type: " << *arg << std::endl;
@@ -38,7 +35,6 @@ namespace cmd{
             std::shared_ptr<obj::FilledShapes> filledShape;
 
             if (*arg == "rectangle") {
-                std::cout << "here to create your rectangle\n";
                 filledShape = std::make_shared<obj::Rectangle>();
             }
             else if (*arg == "square") {
@@ -100,18 +96,10 @@ namespace cmd{
             }
 
             shape = linedShape;
-        }
-
-        
+        }  
         else throw std::runtime_error("(command) ERROR: Unsupported shape type '" + *arg + "'!");
-        std::cout << "got you bro\n";
-        std::cout << "DEBUG: Shape pointer = " << shape.get() << std::endl;
-        std::cout << "DEBUG: Shape is null? " << (shape ? "NO" : "YES") << std::endl;
 
         std::shared_ptr<obj::Object> objPtr = std::static_pointer_cast<obj::Object>(shape);
-        std::cout << "DEBUG: Object pointer = " << objPtr.get() << std::endl;
-        std::cout << "DEBUG: Object is null? " << (objPtr ? "NO" : "YES") << std::endl;
-
         return std::make_unique<AddShape>(ppt, objPtr);
     }
 

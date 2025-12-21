@@ -13,7 +13,7 @@ namespace cmd{
         auto val = std::get_if<double>(&options["at"].val);
         if(val)
             return std::make_unique<ShowSlide>(ppt, *val);
-        else throw std::runtime_error("(command) ERROR: The file path is not specified.");
+        else throw std::runtime_error("(command) ERROR: The slide position (id) is not specified.");
         
     }
 }

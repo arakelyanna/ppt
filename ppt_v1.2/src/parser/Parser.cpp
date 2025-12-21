@@ -55,7 +55,6 @@ std::unique_ptr<cmd::I_Command> dec::Parser::parse() {
 }
 
 void dec::Parser::process(Token& tok) {
-    std::cout << "processing " << tok.value << ' ' << (int)tok.type << '\n';
     
     State previousState = currentState;
     
@@ -95,7 +94,6 @@ void dec::Parser::process(Token& tok) {
                 coord_buffer.clear();
             }
             
-            std::cout << "arg state\n";
             
             if (cmd::filled_shapes.find(tok.value) != cmd::filled_shapes.end() || 
                 cmd::lined_shapes.find(tok.value) != cmd::lined_shapes.end())
@@ -122,7 +120,6 @@ void dec::Parser::process(Token& tok) {
                 currentState = State::Err;
                 break;
             }
-            std::cout << "val state\n";
             switch (tok.type)
             {
                 case TokenType::Number:

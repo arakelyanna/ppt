@@ -11,6 +11,10 @@ namespace obj{
         length =  std::sqrt(std::pow(pos[0].first-pos[1].first, 2)+std::pow(pos[0].second-pos[1].second, 2));
     }
 
+    void Line::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
+
     const std::string& Line::get_type() const {
         static const std::string type = "Line";
         return type;    

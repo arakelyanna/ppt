@@ -7,6 +7,10 @@ namespace obj{
     Circle::Circle() : FilledShapes(), radius(1){
         pos={{0, 0}};
     }
+    
+    void Circle::accept(const out::IVisitor& visitor) {
+        visitor.visit(*this);
+    }
 
     void Circle::create(const Geometry& coords) {
         assert(coords.size() == 2 && (pos[0].first - pos[1].first) == (pos[0].second - pos[1].second));
