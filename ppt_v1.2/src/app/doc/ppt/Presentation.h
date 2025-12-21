@@ -6,7 +6,7 @@ namespace doc {
     class Ppt {
     public:
         Ppt(const std::string& path = "");
-        void setFilePath(const std::string& file  = "./ztest/ppt_test");
+        void setFilePath(const std::string& file  = "./ppt_test");
         
         void add_slide(std::shared_ptr<Slide> slide, size_t pos = std::numeric_limits<size_t>::max());
         std::shared_ptr<Slide> remove_slide(size_t pos = std::numeric_limits<size_t>::max());

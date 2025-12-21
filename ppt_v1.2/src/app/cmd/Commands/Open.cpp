@@ -6,12 +6,12 @@ namespace cmd {
         auto& deserializer = file::SerializationFactory::createDefaultFactory();
         std::shared_ptr<doc::Ppt> loadedPpt = deserializer.loadFromFile(file_path);
         
-        if (!loadedPpt) {  // ✅ Fixed semicolon
+        if (!loadedPpt) {  
             output << "Failed to open file " << file_path << "\n";
             return false;
         }
         
-        editor->set_file(loadedPpt);  // ✅ Update editor's ppt pointer
+        editor->set_file(loadedPpt); 
         
         output << "File " << file_path << " successfully opened!\n";
         return true;

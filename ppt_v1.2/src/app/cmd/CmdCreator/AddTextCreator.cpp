@@ -32,7 +32,7 @@ namespace cmd{
         if(arg) text->set_color(*arg);
 
         auto size = std::get_if<int>(&options.at("size").val);
-        if(arg) text->set_size(*size);
+        if(size) text->set_size(*size);
 
         return std::make_unique<AddText>(ppt, text);
     }

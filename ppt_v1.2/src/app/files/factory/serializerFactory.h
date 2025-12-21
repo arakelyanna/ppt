@@ -8,7 +8,6 @@
 #include <string>
 #include "../json.hpp"
 
-// Forward declarations
 namespace obj {
     class Object;
 }
@@ -35,8 +34,7 @@ namespace file {
         
     private:
         template<typename T>
-        void registerSerializer(const std::string& typeName,
-                               std::function<std::unique_ptr<ISerializer>(const T&)> creator);
+        void registerSerializer(std::function<std::unique_ptr<ISerializer>(const T&)> creator);
 
         void registerDeserializer(const std::string& typeName,
                                  std::function<std::shared_ptr<obj::Object>(const json&)> creator);
@@ -45,12 +43,10 @@ namespace file {
 
         std::shared_ptr<obj::Object> createObject(const json& j) const;
 
-        // Serialize a single slide using iterators (no objects parameter needed)
         json serializeSlide(const doc::Slide& slide) const;
 
         std::shared_ptr<doc::Slide> deserializeSlide(const json& j) const;
 
-        // Serialize entire presentation (uses iterators internally)
         json serializePresentation(std::shared_ptr<doc::Ppt> ppt) const;
 
         std::shared_ptr<doc::Ppt> deserializePresentation(const json& j) const;
@@ -63,16 +59,15 @@ namespace file {
                           std::function<std::shared_ptr<obj::Object>(const json&)>> deserializerCreators_;
     };
 
+
+    // Because of the template
     template<typename T>
-    void SerializationFactory::registerSerializer(const std::string& typeName,
-                           std::function<std::unique_ptr<ISerializer>(const T&)> creator) {
+    void SerializationFactory::registerSerializer(std::function<std::unique_ptr<ISerializer>(const T&)> creator) {
         auto typeIdx = std::type_index(typeid(T));
-        serializerCreators_[typeIdx] = [creator, typeName](const obj::Object& obj) {
+        serializerCreators_[typeIdx] = [creator](const obj::Object& obj) {
             return creator(dynamic_cast<const T&>(obj));
         };
-        typeNames_[typeIdx] = typeName;
     }
 
-    // SerializationFactory createDefaultFactory();
     
 }

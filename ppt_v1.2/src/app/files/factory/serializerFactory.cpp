@@ -28,42 +28,32 @@ namespace file {
 
     std::shared_ptr<obj::Object> SerializationFactory::createObject(const json& j) const {
         if (!j.contains("type")) {
-            throw std::runtime_error("JSON object missing 'type' field");
+            throw std::runtime_error("(files) ERROR: JSON object missing 'type' field");
         }
         
         std::string type = j["type"].get<std::string>();
         auto it = deserializerCreators_.find(type);
         if (it == deserializerCreators_.end()) {
-            throw std::runtime_error("No deserializer registered for type: " + type);
+            throw std::runtime_error("(files) ERROR: No deserializer registered for type: " + type);
         }
         return it->second(j);
     }
 
     json SerializationFactory::serializeSlide(const doc::Slide& slide) const {
-        std::vector<std::unique_ptr<ISerializer>> objectSerializers;
-        
-        int count = 0;
-        
         json j;
         j["id"] = slide.get_id();
+        j["objects"] = json::array();
         
-        for (auto it = slide.begin(); it != slide.end(); ++it) {
-            count++;
-        }
-        
+        // ONE loop, no vector!
         for (auto it = slide.begin(); it != slide.end(); ++it) {
             const auto& obj = *it;
             if (obj) {
-                objectSerializers.push_back(createSerializer(*obj));
+                auto serializer = createSerializer(*obj);  // Create
+                j["objects"].push_back(serializer->serialize());  // Use immediately
             }
         }
-        j["objects"] = json::array();
         
-        for (const auto& serializer : objectSerializers) {
-            j["objects"].push_back(serializer->serialize());
-        }
-        
-        return j;  
+        return j;
     }
 
     std::shared_ptr<doc::Slide> SerializationFactory::deserializeSlide(const json& j) const {
@@ -97,7 +87,6 @@ namespace file {
             auto slidePtr = (*ppt)[i];
             if (!slidePtr) continue;
             
-            // Serialize slide immediately
             j["slides"].push_back(serializeSlide(*slidePtr));
         }
         
@@ -165,8 +154,7 @@ namespace file {
         static SerializationFactory factory;
         
         // Register Text
-        factory.registerSerializer<obj::Text>("text", 
-            [](const obj::Text& text) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Text>([](const obj::Text& text) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<TextSerializer>(text);
             });
         factory.registerDeserializer("text",
@@ -175,18 +163,15 @@ namespace file {
             });
         
         // Register Circle
-        factory.registerSerializer<obj::Circle>("circle",
-            [](const obj::Circle& circle) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Circle>([](const obj::Circle& circle) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<FilledShapeSerializer>(circle, "circle");
             });
-        factory.registerDeserializer("circle",
-            [](const json& j) -> std::shared_ptr<obj::Object> {
+        factory.registerDeserializer("circle", [](const json& j) -> std::shared_ptr<obj::Object> {
                 return FilledShapeDeserializer<obj::Circle>::deserialize(j);
             });
         
         // Register Rectangle
-        factory.registerSerializer<obj::Rectangle>("rectangle",
-            [](const obj::Rectangle& rect) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Rectangle>([](const obj::Rectangle& rect) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<FilledShapeSerializer>(rect, "rectangle");
             });
         factory.registerDeserializer("rectangle",
@@ -195,8 +180,7 @@ namespace file {
             });
         
         // Register Square
-        factory.registerSerializer<obj::Square>("square",
-            [](const obj::Square& sq) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Square>([](const obj::Square& sq) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<FilledShapeSerializer>(sq, "square");
             });
         factory.registerDeserializer("square",
@@ -205,18 +189,15 @@ namespace file {
             });
         
         // Register Triangle
-        factory.registerSerializer<obj::Triangle>("triangle",
-            [](const obj::Triangle& tri) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Triangle>([](const obj::Triangle& tri) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<FilledShapeSerializer>(tri, "triangle");
             });
-        factory.registerDeserializer("triangle",
-            [](const json& j) -> std::shared_ptr<obj::Object> {
+        factory.registerDeserializer("triangle", [](const json& j) -> std::shared_ptr<obj::Object> {
                 return FilledShapeDeserializer<obj::Triangle>::deserialize(j);
             });
         
         // Register Picture
-        factory.registerSerializer<obj::Picture>("picture",
-            [](const obj::Picture& pic) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Picture>([](const obj::Picture& pic) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<FilledShapeSerializer>(pic, "picture");
             });
         factory.registerDeserializer("picture",
@@ -225,18 +206,15 @@ namespace file {
             });
         
         // Register Line
-        factory.registerSerializer<obj::Line>("line",
-            [](const obj::Line& line) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Line>([](const obj::Line& line) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<LinedShapeSerializer>(line, "line");
             });
-        factory.registerDeserializer("line",
-            [](const json& j) -> std::shared_ptr<obj::Object> {
+        factory.registerDeserializer("line", [](const json& j) -> std::shared_ptr<obj::Object> {
                 return LinedShapeDeserializer<obj::Line>::deserialize(j);
             });
         
         // Register Arrow
-        factory.registerSerializer<obj::Arrow>("arrow",
-            [](const obj::Arrow& arrow) -> std::unique_ptr<ISerializer> {
+        factory.registerSerializer<obj::Arrow>([](const obj::Arrow& arrow) -> std::unique_ptr<ISerializer> {
                 return std::make_unique<LinedShapeSerializer>(arrow, "arrow");
             });
         factory.registerDeserializer("arrow",

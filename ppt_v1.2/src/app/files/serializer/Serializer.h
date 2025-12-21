@@ -134,7 +134,6 @@ namespace file {
                     json objJson = objectSerializers_[i]->serialize();
                     j["objects"].push_back(objJson);
                 } catch (const std::exception& e) {
-                    std::cerr << "ERROR serializing object " << i << ": " << e.what() << std::endl;
                     throw std::runtime_error("(files) ERROR: Could not serialize object " + std::to_string(i) + ": " + std::string(e.what()));
                 }
             }
