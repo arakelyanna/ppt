@@ -10,17 +10,25 @@ namespace cmd {
     }
 
     std::string CmdRegister::find(const std::string& command_name) const {
-        auto it = commands.find(command_name);
-        if (it != commands.end())
-            return "is";
+        bool exact_match = commands.find(command_name) != commands.end();
+        bool has_longer = false;
         
+        // Check if there are longer commands starting with this prefix
         for (const auto& [key, creator] : commands) {
-            if (key.starts_with(command_name)) {
-                return "starts_with";
+            if (key.starts_with(command_name) && key.length() > command_name.length()) {
+                has_longer = true;
+                break;
             }
         }
         
+        if (has_longer) {
+            return "starts_with";
+        }
+        
+        if (exact_match) {
+            return "is";
+        }
+        
         throw std::runtime_error("(command) ERROR: Invalid command " + command_name + "\n");
-        return "not found";
     }
 }

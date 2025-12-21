@@ -25,7 +25,7 @@ namespace obj {
 
     void Text::set_size(size_t size) {
         if (size < 1) this->size = 1;
-        else if (size > 32) this->size = 32;
+        else if (size >= 500) this->size = 500;
         else this->size = size;
     }
 

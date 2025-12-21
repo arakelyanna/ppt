@@ -106,19 +106,35 @@ namespace cmd {
         SaveCreator(std::shared_ptr<doc::Ppt> ppt);
         std::unique_ptr<I_Command> create() override;
     };
+    
     class UndoCreator : public I_CmdCreator {
     public:
         UndoCreator(std::shared_ptr<doc::Ppt> ppt);
         std::unique_ptr<I_Command> create() override;
     };
+
     class RedoCreator : public I_CmdCreator {
     public:
         RedoCreator(std::shared_ptr<doc::Ppt> ppt);
         std::unique_ptr<I_Command> create() override;
     };
+
     class ExitCreator : public I_CmdCreator {
     public:
         ExitCreator(std::shared_ptr<doc::Ppt> ppt);
+        std::unique_ptr<I_Command> create() override;
+    };
+
+    
+    class CurrentSlideCreator : public I_CmdCreator {
+    public:
+        CurrentSlideCreator(std::shared_ptr<doc::Ppt> ppt);
+        std::unique_ptr<I_Command> create() override;
+    };
+
+    class SetCurrentSlideCreator : public I_CmdCreator {
+    public:
+        SetCurrentSlideCreator(std::shared_ptr<doc::Ppt> ppt);
         std::unique_ptr<I_Command> create() override;
     };
 }

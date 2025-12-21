@@ -26,29 +26,51 @@ namespace doc {
         filePath = file;
     }
 
-    void Ppt::add_slide(std::shared_ptr<Slide> slide, size_t pos) {
+    void Ppt::add_slide(std::shared_ptr<Slide> slide, size_t pos)
+    {
+        if (pos == std::numeric_limits<size_t>::max())
+            pos = ppt.size();
+
         if (pos > ppt.size())
-            throw std::out_of_range("(doc) ERROR: Invalid slide index " +  std::to_string(pos));
-        for (size_t i = pos; i < ppt.size(); i++)
-        {
+            throw std::out_of_range(
+                "(doc) ERROR: Invalid slide index " + std::to_string(pos)
+            );
+
+        for (size_t i = pos; i < ppt.size(); ++i) {
             ppt[i]->set_id(ppt[i]->get_id() + 1);
         }
-        
+
         slide->set_id(pos);
         ppt.insert(ppt.begin() + pos, slide);
+        current = pos;
     }
+
     
-    std::shared_ptr<Slide> Ppt::remove_slide(size_t pos) {
-        if (pos > ppt.size())
-            throw std::out_of_range("(doc) ERROR: Invalid slide index " +  std::to_string(pos));
-        for (size_t i = pos; i < ppt.size(); i++)
-        {
-            ppt[i]->set_id(ppt[i]->get_id() - 1);
+    std::shared_ptr<Slide> Ppt::remove_slide(size_t pos)
+    {
+        if (ppt.empty()) {
+            throw std::out_of_range("(doc) ERROR: No slides to remove");
         }
+
+        if (pos == std::numeric_limits<size_t>::max()) {
+            pos = ppt.size() - 1;
+        }
+
+        if (pos >= ppt.size()) {
+            throw std::out_of_range("(doc) ERROR: Invalid slide index " + std::to_string(pos));
+        }
+
         std::shared_ptr<Slide> erased = ppt[pos];
         ppt.erase(ppt.begin() + pos);
+
+        for (size_t i = pos; i < ppt.size(); ++i) {
+            ppt[i]->set_id(ppt[i]->get_id() - 1);
+        }
+
         return erased;
     }
+
+
 
     
     void Ppt::add_object(std::shared_ptr<obj::Object> obj) {
@@ -58,10 +80,21 @@ namespace doc {
     std::shared_ptr<obj::Object> Ppt::remove_object(const obj::Coord& pos) {
         std::shared_ptr<obj::Object> pObj = ppt[current]->get_object(pos);
         if (!pObj) 
-            throw std::runtime_error("(action) ERROR: At the specified point no object has been found");
+            throw std::runtime_error("(action) ERROR: No object has been found at the specified point");
         return ppt[current]->remove_object(pObj);
     }
 
+    void Ppt::set_current(size_t pos) {
+        if (pos >= ppt.size()) {
+            throw std::out_of_range(
+                "(doc) ERROR: Invalid slide index " + std::to_string(pos));
+        }
+        current = pos;
+    }
+    
+    size_t Ppt::get_current() const {
+        return current;
+    }
 
     size_t Ppt::size() const {
         return ppt.size();

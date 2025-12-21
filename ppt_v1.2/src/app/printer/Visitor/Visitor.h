@@ -7,8 +7,8 @@ namespace out{
     public:
         IVisitor() = default;
         IVisitor(std::shared_ptr<doc::Ppt> ppt) : ppt(ppt) {}
-        virtual void print() const = 0;
-        virtual void printSlide(size_t pos) const = 0;
+        virtual void print() = 0;
+        virtual void printSlide(size_t pos) = 0;
         virtual void visit(const obj::Rectangle& obj) const = 0;
         virtual void visit(const obj::Triangle& obj) const = 0; 
         virtual void visit(const obj::Circle& obj) const = 0;   
@@ -29,8 +29,8 @@ namespace out{
              IVisitor(ppt) {
            printer = std::make_shared<CLIPrinter>(output);
         }
-        void print() const override;
-        void printSlide(size_t pos) const override;
+        void print() override;
+        void printSlide(size_t pos) override;
         void visit(const obj::Rectangle& obj) const override;
         void visit(const obj::Triangle& obj) const override;
         void visit(const obj::Circle& obj) const override;
@@ -43,9 +43,9 @@ namespace out{
 
     class SVGPrinterVisitor : public IVisitor {
     public:
-        SVGPrinterVisitor(std::shared_ptr<doc::Ppt> ppt) : IVisitor(ppt) {}
-        void print() const override;
-        void printSlide(size_t pos) const override;
+        SVGPrinterVisitor(std::shared_ptr<doc::Ppt> ppt) : IVisitor(ppt) { }
+        void print() override;
+        void printSlide(size_t pos) override;
         void visit(const obj::Rectangle& obj) const override;
         void visit(const obj::Triangle& obj) const override;
         void visit(const obj::Circle& obj) const override;

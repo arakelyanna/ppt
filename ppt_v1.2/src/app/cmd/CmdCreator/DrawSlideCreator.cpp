@@ -10,7 +10,7 @@ namespace cmd {
         }
 
     std::unique_ptr<I_Command> DrawSlideCreator::create() {
-        auto val = std::get_if<double>(&options["at"].val);
+        auto val = std::get_if<int>(&options["at"].val);
         if(val)
             return std::make_unique<DrawSlide>(ppt, *val);
         else throw std::runtime_error("(command) ERROR: The slide position (id) is not specified.");

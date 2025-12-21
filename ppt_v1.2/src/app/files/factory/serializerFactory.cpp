@@ -18,7 +18,7 @@ namespace file {
         auto it = serializerCreators_.find(typeIdx);
         
         if (it == serializerCreators_.end()) {
-            throw std::runtime_error("(files) WARNING: No serializer registered for object type " + std::string(typeid(obj).name()));
+            throw std::runtime_error("(files) WARNING: No serializer registered for object type " + std::string(typeid(obj).name()) + "\n");
         }
         
         auto result = it->second(obj);
@@ -77,7 +77,7 @@ namespace file {
                     auto obj = createObject(objJson);
                     objects.push_back(obj);
                 } catch (const std::exception& e) {
-                    throw std::runtime_error("(files) WARNING: Failed to deserialize slide: " + std::string(e.what()));
+                    throw std::runtime_error("(files) WARNING: Failed to deserialize slide: " + std::string(e.what()) + "\n");
 
                 }
             }
@@ -112,8 +112,7 @@ namespace file {
                 try {
                     slides.push_back(deserializeSlide(slideJson));
                 } catch (const std::exception& e) {
-                    throw std::runtime_error("(files) WARNING: Failed to deserialize slide: " + std::string(e.what()));
-
+                    throw std::runtime_error("(files) WARNING: Failed to deserialize slide: " + std::string(e.what()) + "\n");
                 }
             }
         }

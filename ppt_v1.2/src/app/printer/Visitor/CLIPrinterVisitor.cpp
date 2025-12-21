@@ -2,14 +2,14 @@
 
 namespace out{
 
-    void CLIPrinterVisitor::print() const {
+    void CLIPrinterVisitor::print() {
         for (size_t i = 0; i < ppt->size(); i++)
         {
             printSlide(i);
         }
     }
 
-    void CLIPrinterVisitor::printSlide(size_t pos) const {
+    void CLIPrinterVisitor::printSlide(size_t pos) {
         auto slide = ppt->operator[](pos);
         printer->printSlide(slide);
         for (auto& obj : *slide)

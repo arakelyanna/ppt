@@ -154,4 +154,20 @@ namespace cmd {
             : I_Command(ppt) {}
         bool execute(std::ostream& output) override;
     };
+
+    class CurrentSlide : public I_Command {
+    public:
+        CurrentSlide(std::shared_ptr<doc::Ppt> ppt)
+            : I_Command(ppt) {}
+        bool execute(std::ostream& output) override;
+    };
+
+    class SetCurrentSlide : public I_Command {
+    public:
+        SetCurrentSlide(std::shared_ptr<doc::Ppt> ppt, size_t pos)
+            : I_Command(ppt), pos(pos) {}
+        bool execute(std::ostream& output) override;
+    private:
+        size_t pos;
+    };
 }

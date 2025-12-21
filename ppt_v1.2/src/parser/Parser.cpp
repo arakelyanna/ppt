@@ -153,6 +153,16 @@ void dec::Parser::process(Token& tok) {
             break;
             
         case State::End:
+            // Trim trailing space from command_name before creating command
+            if (!command_name.empty() && command_name.back() == ' ') {
+                command_name.pop_back();
+            }
+            
+            // Try to get the command creator if we haven't already
+            if (!cmd_creator && !command_name.empty()) {
+                cmd_creator = cmd_register.get(command_name);
+            }
+            
             if (!coord_buffer.empty() && cmd_creator) {
                 cmd::Value coord_value = coord_buffer;
                 cmd_creator->set(key, coord_value);
