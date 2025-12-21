@@ -17,6 +17,7 @@ namespace out{
         virtual void visit(const obj::Text& obj) const = 0;     
         virtual void visit(const obj::Line& obj) const = 0;     
         virtual void visit(const obj::Arrow& obj) const = 0;    
+        virtual ~IVisitor() = default;
         
     protected:
         std::shared_ptr<IPrinter> printer;

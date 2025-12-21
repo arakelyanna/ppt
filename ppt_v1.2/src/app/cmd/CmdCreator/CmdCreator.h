@@ -137,4 +137,10 @@ namespace cmd {
         SetCurrentSlideCreator(std::shared_ptr<doc::Ppt> ppt);
         std::unique_ptr<I_Command> create() override;
     };
+
+    class HelpCreator : public I_CmdCreator {
+    public:
+        HelpCreator(std::shared_ptr<doc::Ppt> ppt);
+        std::unique_ptr<I_Command> create() override;
+    };
 }

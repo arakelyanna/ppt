@@ -3,7 +3,7 @@
 
 namespace doc {
 
-    Ppt::Ppt(const std::string& path="") : current(0) {
+    Ppt::Ppt(const std::string& path) : current(0) {
         if (path != "") {
             auto& deserializer = file::SerializationFactory::createDefaultFactory();
             std::shared_ptr<doc::Ppt> loadedPpt = deserializer.loadFromFile(path);
@@ -22,7 +22,7 @@ namespace doc {
     }
 
 
-    void Ppt::setFilePath(const std::string& file = "./ztest/ppt_test") {
+    void Ppt::setFilePath(const std::string& file) {
         filePath = file;
     }
 
@@ -48,30 +48,27 @@ namespace doc {
     
     std::shared_ptr<Slide> Ppt::remove_slide(size_t pos)
     {
-        if (ppt.empty()) {
+        if (ppt.empty())
             throw std::out_of_range("(doc) ERROR: No slides to remove");
-        }
 
-        if (pos == std::numeric_limits<size_t>::max()) {
+        if (pos == std::numeric_limits<size_t>::max())
             pos = ppt.size() - 1;
-        }
 
-        if (pos >= ppt.size()) {
+        if (pos >= ppt.size())
             throw std::out_of_range("(doc) ERROR: Invalid slide index " + std::to_string(pos));
-        }
 
-        std::shared_ptr<Slide> erased = ppt[pos];
+        auto erased = ppt[pos];
         ppt.erase(ppt.begin() + pos);
 
         for (size_t i = pos; i < ppt.size(); ++i) {
-            ppt[i]->set_id(ppt[i]->get_id() - 1);
+            ppt[i]->set_id(i); 
         }
+
+        if (current >= ppt.size())
+            current = ppt.size() - 1;
 
         return erased;
     }
-
-
-
     
     void Ppt::add_object(std::shared_ptr<obj::Object> obj) {
         ppt[current]->add_object(obj);

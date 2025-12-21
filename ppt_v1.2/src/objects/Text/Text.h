@@ -33,7 +33,7 @@ namespace obj {
         const Geometry& get_geometry() const;
 
     private:
-        const std::array<std::string, 4> styles = {"arial", "roberto", "sylfaen", "temes new roman"};
+        const std::array<std::string, 4> styles = {"arial", "roberto", "sylfaen", "times new roman"};
         
         Geometry pos;
         std::string value;

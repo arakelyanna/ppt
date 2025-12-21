@@ -24,6 +24,8 @@ namespace doc{
 
     private:
         bool point_position(const obj::Geometry& shape, const obj::Coord& p);
+        bool isPointInPolygon(const obj::Geometry& poly, const obj::Coord& p);
+        double distanceToSegment(const obj::Coord& a, const obj::Coord& b, const obj::Coord& p);
 
         size_t id;
         std::vector<std::shared_ptr<obj::Object>> objects;

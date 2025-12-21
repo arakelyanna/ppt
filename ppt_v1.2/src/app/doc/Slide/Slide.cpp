@@ -38,40 +38,72 @@ namespace doc{
 
 
     bool Slide::point_position(const obj::Geometry& shape, const obj::Coord& p) {
-        const double eps = 1e-9;
-
-        if (shape.size() == 1)
-            return (std::abs(p.first - shape[0].first) < eps && std::abs(p.second - shape[0].second) < eps) 
-                ? true 
-                : false;
-
-        int n = shape.size();
-
-        for (int i = 0; i < n; ++i) {
+        const double CLICK_TOLERANCE = 5;  // 10 pixels
+        
+        // Single point (Text)
+        if (shape.size() == 1) {
+            double dx = p.first - shape[0].first;
+            double dy = p.second - shape[0].second;
+            return (dx*dx + dy*dy) <= CLICK_TOLERANCE * CLICK_TOLERANCE;
+        }
+        
+        // Line or Arrow (2 points)
+        if (shape.size() == 2) {
+            return distanceToSegment(shape[0], shape[1], p) <= CLICK_TOLERANCE;
+        }
+        
+        // Polygon (Triangle, Rectangle, etc.) - check if inside OR near boundary
+        // First check if near any edge
+        for (int i = 0; i < shape.size(); ++i) {
             const obj::Coord& a = shape[i];
-            const obj::Coord& b = shape[(i + 1) % n];
-
-            if (std::abs(p.first - a.first) < eps && std::abs(p.second - a.second) < eps)
+            const obj::Coord& b = shape[(i + 1) % shape.size()];
+            if (distanceToSegment(a, b, p) <= CLICK_TOLERANCE) {
                 return true;
-
-            double cross = (b.first - a.first) * (p.second - a.second) - (b.second - a.second) * (p.first - a.first);
-            if (std::abs(cross) < eps) {
-                double dot = (p.first - a.first) * (b.first - a.first) + (p.second - a.second) * (b.second - a.second);
-                double len_sq = (b.first - a.first)*(b.first - a.first) + (b.second - a.second)*(b.second - a.second);
-                if (dot >= 0 && dot <= len_sq)
-                    return true;
             }
         }
+        
+        // Then check if inside (ray casting algorithm)
+        return isPointInPolygon(shape, p);
+    }
 
-        double prev = 0;
-        for (int i = 0; i < n; ++i) {
-            const obj::Coord& a = shape[i];
-            const obj::Coord& b = shape[(i + 1) % n];
-            double cross = (b.first - a.first)*(p.second - a.second) - (b.second - a.second)*(p.first - a.first);
-            if (i == 0) prev = cross;
-            else if (cross * prev < -eps) return false;
+    double Slide::distanceToSegment(const obj::Coord& a, const obj::Coord& b, const obj::Coord& p) {
+        double dx = b.first - a.first;
+        double dy = b.second - a.second;
+        double len_sq = dx*dx + dy*dy;
+        
+        if (len_sq < 1e-9) {
+            // Segment is actually a point
+            double pdx = p.first - a.first;
+            double pdy = p.second - a.second;
+            return std::sqrt(pdx*pdx + pdy*pdy);
         }
+        
+        // Project point onto line
+        double t = ((p.first - a.first) * dx + (p.second - a.second) * dy) / len_sq;
+        t = std::max(0.0, std::min(1.0, t));  // Clamp to segment
+        
+        double proj_x = a.first + t * dx;
+        double proj_y = a.second + t * dy;
+        
+        double dist_x = p.first - proj_x;
+        double dist_y = p.second - proj_y;
+        return std::sqrt(dist_x*dist_x + dist_y*dist_y);
+    }
 
-        return true;
+    // Ray casting algorithm for point in polygon
+    bool Slide::isPointInPolygon(const obj::Geometry& poly, const obj::Coord& p) {
+        int n = poly.size();
+        bool inside = false;
+        
+        for (int i = 0, j = n - 1; i < n; j = i++) {
+            double xi = poly[i].first, yi = poly[i].second;
+            double xj = poly[j].first, yj = poly[j].second;
+            
+            bool intersect = ((yi > p.second) != (yj > p.second))
+                && (p.first < (xj - xi) * (p.second - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        
+        return inside;
     }
 }

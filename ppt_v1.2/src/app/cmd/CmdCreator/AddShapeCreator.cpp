@@ -78,15 +78,17 @@ namespace cmd{
             else if (*arg == "arrow") {
                 linedShape = std::make_shared<obj::Arrow>();
             }
+            
             auto pos = std::get_if<obj::Geometry>(&options.at("pos").val);
             if(pos) linedShape->create(*pos);
             else throw std::runtime_error("(command) ERROR: The shape Geometry is not ok, please fix it.");
             
+            // ADD CHECKS!
             arg = std::get_if<std::string>(&options.at("color").val);
-            linedShape->set_color(*arg);
-
+            if(arg) linedShape->set_color(*arg);  // ✓ Check before dereferencing
+            
             auto width = std::get_if<double>(&options.at("line_width").val);
-            linedShape->set_width(*width);
+            if(width) linedShape->set_width(*width);  // ✓ Check before dereferencing
 
             auto text_arg = std::get_if<std::string>(&options.at("text").val);
             if (text_arg) {
@@ -96,7 +98,7 @@ namespace cmd{
             }
 
             shape = linedShape;
-        }  
+        }
         else throw std::runtime_error("(command) ERROR: Unsupported shape type '" + *arg + "'!");
 
         std::shared_ptr<obj::Object> objPtr = std::static_pointer_cast<obj::Object>(shape);

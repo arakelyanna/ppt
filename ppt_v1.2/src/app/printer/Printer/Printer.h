@@ -23,6 +23,8 @@ namespace out{
         virtual void print_arrow(const obj::Arrow& obj) = 0;
         virtual void print_picture(const obj::Picture& obj) = 0;
         virtual void print_text(const obj::Text& obj) = 0;
+
+        virtual ~IPrinter() = default;
     };
 
     class CLIPrinter : public IPrinter{

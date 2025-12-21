@@ -25,6 +25,7 @@ namespace cmd {
             commands.emplace("redo", [ppt](){ return std::make_unique<RedoCreator>(ppt); });
             commands.emplace("set current slide", [ppt](){ return std::make_unique<SetCurrentSlideCreator>(ppt); });
             commands.emplace("current slide", [ppt](){ return std::make_unique<CurrentSlideCreator>(ppt); });
+            commands.emplace("help", [ppt](){ return std::make_unique<HelpCreator>(ppt); });
             commands.emplace("exit", [ppt](){ return std::make_unique<ExitCreator>(ppt); });
             commands.emplace("q", [ppt](){ return std::make_unique<ExitCreator>(ppt); });
         }

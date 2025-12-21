@@ -170,4 +170,13 @@ namespace cmd {
     private:
         size_t pos;
     };
+
+    class Help : public I_Command {
+    public:
+        Help(std::shared_ptr<doc::Ppt> ppt, const std::string& cmd_name)
+            : I_Command(ppt), cmd_name(cmd_name) {}
+        bool execute(std::ostream& output) override;
+    private:
+        std::string cmd_name;
+    };
 }
