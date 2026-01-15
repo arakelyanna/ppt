@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="960" height="720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Slide 2 -->
+  <rect width="100%" height="100%" fill="white"/>
+  <polygon points="500,800 125,120 301,218" fill="yellow" stroke="red" stroke-width="0.5" />
+  <text x="308.667" y="379.333" text-anchor="middle" dominant-baseline="middle" fill="black" font-size="11" >text</text>
+</svg>

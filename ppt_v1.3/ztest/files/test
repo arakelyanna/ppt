@@ -1,0 +1,88 @@
+{
+    "Slides": [
+        {
+            "Slide ID": 0,
+            "color": "blue",
+            "objects": []
+        },
+        {
+            "Slide ID": 1,
+            "color": "",
+            "objects": [
+                {
+                    "color": "red",
+                    "filled": true,
+                    "geometry": [
+                        {
+                            "x": 700.0,
+                            "y": 700.0
+                        },
+                        {
+                            "x": 101.0,
+                            "y": 101.0
+                        }
+                    ],
+                    "line_color": "black",
+                    "line_width": 1.0,
+                    "radius": 299.5,
+                    "text": "red circle",
+                    "text_color": "black",
+                    "text_size": 11,
+                    "text_style": "arial",
+                    "type": "Circle"
+                }
+            ]
+        },
+        {
+            "Slide ID": 2,
+            "color": "",
+            "objects": [
+                {
+                    "color": "red",
+                    "filled": true,
+                    "geometry": [
+                        {
+                            "x": 700.0,
+                            "y": 700.0
+                        },
+                        {
+                            "x": 101.0,
+                            "y": 101.0
+                        }
+                    ],
+                    "line_color": "black",
+                    "line_width": 1.0,
+                    "radius": 299.5,
+                    "text": "red circle",
+                    "text_color": "black",
+                    "text_size": 11,
+                    "text_style": "arial",
+                    "type": "Circle"
+                },
+                {
+                    "color": "blue",
+                    "filled": true,
+                    "geometry": [
+                        {
+                            "x": 500.0,
+                            "y": 400.0
+                        },
+                        {
+                            "x": 9.0,
+                            "y": 9.0
+                        }
+                    ],
+                    "height": 391.0,
+                    "line_color": "yellow",
+                    "line_width": 1.0,
+                    "text": "text",
+                    "text_color": "black",
+                    "text_size": 11,
+                    "text_style": "arial",
+                    "type": "Rectangle",
+                    "width": 391.0
+                }
+            ]
+        }
+    ]
+}

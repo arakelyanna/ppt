@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="960" height="720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Slide 3 -->
+  <rect width="100%" height="100%" fill="white"/>
+  <line x1="86" y1="70" x2="120" y2="70" stroke="black" stroke-width="0" />
+  <text x="103" y="70" text-anchor="middle" dominant-baseline="middle" fill="black" font-size="11" >text</text>
+  <text x="500" y="200" fill="black" font-size="11" >AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</text>
+  <circle cx="400.5" cy="400.5" r="299.5" fill="red" stroke="black" stroke-width="1" />
+  <text x="400.5" y="400.5" text-anchor="middle" dominant-baseline="middle" fill="black" font-size="11" >red circle</text>
+</svg>
